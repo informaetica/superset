@@ -67,6 +67,12 @@ REDIS_RESULTS_DB = get_env_variable("REDIS_CELERY_DB", 1)
 
 RESULTS_BACKEND = FileSystemCache("/app/superset_home/sqllab")
 
+FEATURE_FLAGS = {
+    "THUMBNAILS": True,
+    "THUMBNAILS_SQLA_LISTENERS": True,
+    "LISTVIEWS_DEFAULT_CARD_VIEW" : True,
+}
+
 
 class CeleryConfig(object):
     BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_DB}"
@@ -78,6 +84,46 @@ class CeleryConfig(object):
 
 CELERY_CONFIG = CeleryConfig
 SQLLAB_CTAS_NO_LIMIT = True
+
+
+CACHE_CONFIG = {
+    'CACHE_TYPE': 'redis',
+    'CACHE_DEFAULT_TIMEOUT': 60 * 60 * 24, # 1 day default (in secs)
+    'CACHE_KEY_PREFIX': 'superset_results',
+    'CACHE_REDIS_URL': 'redis://localhost:6379/0',
+}
+
+THUMBNAIL_SELENIUM_USER = "admin"
+
+THUMBNAIL_CACHE_CONFIG = {
+    'CACHE_TYPE': 'redis',
+    'CACHE_DEFAULT_TIMEOUT': 24*60*60,
+    'CACHE_KEY_PREFIX': 'thumbnail_',
+    'CACHE_NO_NULL_WARNING': True,
+    'CACHE_REDIS_URL': 'redis://redis:6379/1',
+}
+
+
+
+WEBDRIVER_TYPE = "chrome"
+WEBDRIVER_OPTION_ARGS = [
+    "--force-device-scale-factor=2.0",
+    "--high-dpi-support=2.0",
+    "--headless",
+    "--disable-gpu",
+    "--disable-dev-shm-usage",
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-extensions",
+    "--verbose",
+]
+
+# This is for internal use, you can keep http
+WEBDRIVER_BASEURL="http://superset:8088"
+# This is the link sent to the recipient, change to your domain eg. https://superset.mydomain.com
+WEBDRIVER_BASEURL_USER_FRIENDLY="http://localhost:8088"
+
+
 
 #
 # Optionally import superset_config_docker.py (which will have been included on
